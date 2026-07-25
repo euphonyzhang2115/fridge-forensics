@@ -21,9 +21,15 @@ export interface ShoppingItem {
   reason: string;
 }
 
+export interface Unlock {
+  item: string;
+  unlocks: string[];
+}
+
 export interface AnalyzeResponse {
   items: Item[];
   recipes: Recipe[];
   priority: PriorityItem[];
   shopping: ShoppingItem[];
+  unlock: Unlock | null;
 }

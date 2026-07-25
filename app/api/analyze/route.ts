@@ -16,7 +16,8 @@ Respond with ONLY a single JSON object matching this exact shape and nothing els
   "items": [{ "name": string, "quantity": string, "confidence": "high" | "low" }],
   "recipes": [{ "title": string, "usesItems": string[], "missingItems"?: string[] }],
   "priority": [{ "name": string, "reason": string, "expiresOn"?: string }],
-  "shopping": [{ "name": string, "reason": string }]
+  "shopping": [{ "name": string, "reason": string }],
+  "unlock": { "item": string, "unlocks": string[] } | null
 }
 
 Rules:
@@ -24,6 +25,7 @@ Rules:
 - "recipes": 1-3 recipes mostly makeable from the identified items; list anything needed but not visible in "missingItems".
 - "priority": at most 3 items, ordered most urgent to use first. Base "reason" on typical shelf life *after opening* for that category of food (e.g. "Opened milk is typically good for about a week"), not on spoilage claims about this specific photo. Only include "expiresOn" when you can reasonably estimate a date from typical shelf life.
 - "shopping": at most 4 items. Only include an item if it unlocks one of the listed "recipes" (i.e. it appears in that recipe's "missingItems"). Do not include generic pantry staples like salt, pepper, oil, or water unless a recipe specifically calls for a less common variant of one.
+- "unlock": find the single ingredient from "missingItems" across all "recipes" that appears in the most recipes — buying it would complete the greatest number of additional recipes. Set "item" to that ingredient and "unlocks" to the titles of every recipe it appears in. If several ingredients tie, pick whichever is most central to those recipes. If no recipe has any "missingItems", set "unlock" to null.
 
 Output raw JSON only.`;
 
@@ -53,6 +55,13 @@ function stripCodeFences(text: string): string {
   return fenced ? fenced[1].trim() : trimmed;
 }
 
+function isUnlockShape(value: unknown): boolean {
+  if (value === null) return true;
+  if (typeof value !== "object") return false;
+  const v = value as Record<string, unknown>;
+  return typeof v.item === "string" && Array.isArray(v.unlocks);
+}
+
 function isAnalyzeResponseShape(value: unknown): value is AnalyzeResponse {
   if (typeof value !== "object" || value === null) return false;
   const v = value as Record<string, unknown>;
@@ -60,7 +69,8 @@ function isAnalyzeResponseShape(value: unknown): value is AnalyzeResponse {
     Array.isArray(v.items) &&
     Array.isArray(v.recipes) &&
     Array.isArray(v.priority) &&
-    Array.isArray(v.shopping)
+    Array.isArray(v.shopping) &&
+    isUnlockShape(v.unlock)
   );
 }
 

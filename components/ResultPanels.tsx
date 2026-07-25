@@ -75,6 +75,18 @@ export default function ResultPanels({ results }: ResultPanelsProps) {
             ))}
           </ul>
         )}
+
+        {results.unlock && (
+          <div className="mt-6 rounded-xl border border-[color:var(--border-strong)] bg-card px-4 py-3">
+            <p className="text-base font-bold text-accent">
+              Buy {results.unlock.item} to unlock {results.unlock.unlocks.length}{" "}
+              more {results.unlock.unlocks.length === 1 ? "recipe" : "recipes"}
+            </p>
+            <p className="text-base font-normal text-muted">
+              {results.unlock.unlocks.join(", ")}
+            </p>
+          </div>
+        )}
       </section>
     </div>
   );

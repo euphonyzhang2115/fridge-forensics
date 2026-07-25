@@ -46,6 +46,10 @@ export const MOCK_RESULTS: AnalyzeResponse = {
       reason: "Only one carton left",
     },
   ],
+  unlock: {
+    item: "Garlic",
+    unlocks: ["Tomato pasta bake"],
+  },
 };
 
 // Captured verbatim from a real /api/analyze call against public/demo-fridge.jpg.
@@ -136,4 +140,11 @@ export const DEMO_RESULTS: AnalyzeResponse = {
       reason: "Flavors the cheese sauce in the cauliflower bake",
     },
   ],
+  unlock: {
+    item: "Butter",
+    unlocks: [
+      "Cheese and Pepper Omelette with Scallions",
+      "Roasted Cauliflower Cheese Bake",
+    ],
+  },
 };
