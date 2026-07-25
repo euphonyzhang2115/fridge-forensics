@@ -121,17 +121,31 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-8">
-      <h1 className="text-3xl font-semibold">Fridge Forensics</h1>
+    <main className="mx-auto flex min-h-screen w-full max-w-[1000px] flex-col items-center gap-12 px-6 py-16 md:py-24">
+      <div className="flex flex-col items-center gap-3 text-center">
+        <h1 className="text-4xl font-bold tracking-tight">
+          Fridge Forensics
+        </h1>
+        <p className="max-w-md text-base font-normal text-muted">
+          See what’s in your fridge and what to cook with it.
+        </p>
+      </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex w-full flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-[color:var(--border-subtle)] bg-card/40 p-10 sm:flex-row">
         <input
           type="file"
           accept="image/*"
           onChange={handleFileChange}
           disabled={loading}
+          suppressHydrationWarning
+          className="text-base font-normal text-muted file:mr-4 file:rounded-full file:border file:border-[color:var(--border-subtle)] file:bg-transparent file:px-4 file:py-2 file:text-base file:font-bold file:text-foreground disabled:opacity-50"
         />
-        <button type="button" onClick={handleTryExample} disabled={loading}>
+        <button
+          type="button"
+          onClick={handleTryExample}
+          disabled={loading}
+          className="rounded-full border border-accent bg-accent px-5 py-2 text-base font-bold text-background disabled:opacity-50"
+        >
           Try example
         </button>
       </div>
@@ -141,15 +155,36 @@ export default function Home() {
         <img
           src={previewUrl}
           alt="Selected fridge photo"
-          className="max-w-xs"
+          className="max-w-xs rounded-xl border border-[color:var(--border-subtle)]"
         />
       )}
 
-      {loading && <p>Analyzing photo...</p>}
-      {error && <p role="alert">{error}</p>}
+      {loading && (
+        <div
+          role="status"
+          aria-label="Analyzing photo"
+          className="flex w-full flex-col gap-3"
+        >
+          <div className="h-4 w-1/3 animate-pulse rounded-full bg-card" />
+          <div className="h-4 w-full animate-pulse rounded-full bg-card" />
+          <div className="h-4 w-5/6 animate-pulse rounded-full bg-card" />
+          <div className="h-4 w-2/3 animate-pulse rounded-full bg-card" />
+        </div>
+      )}
 
-      <h2>Detected in your fridge</h2>
-      <ItemChips items={results.items} />
+      {error && (
+        <p
+          role="alert"
+          className="w-full rounded-xl border border-[color:var(--border-subtle)] bg-card px-4 py-3 text-base font-bold"
+        >
+          {error}
+        </p>
+      )}
+
+      <div className="flex w-full flex-col gap-4">
+        <h2 className="text-base font-bold">Detected in your fridge</h2>
+        <ItemChips items={results.items} />
+      </div>
 
       <ResultPanels results={results} />
     </main>

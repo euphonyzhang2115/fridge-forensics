@@ -6,15 +6,22 @@ interface ItemChipsProps {
 
 export default function ItemChips({ items }: ItemChipsProps) {
   return (
-    <ul>
+    <ul className="flex flex-wrap gap-2">
       {items.map((item) => (
         <li
           key={item.name}
-          style={item.confidence === "low" ? { opacity: 0.5 } : undefined}
+          className={`inline-flex items-center gap-1 rounded-full border border-[color:var(--border-subtle)] bg-card px-3 py-1 text-base font-normal ${
+            item.confidence === "low" ? "opacity-50" : ""
+          }`}
         >
           {item.name} ({item.quantity})
           {item.confidence === "low" && (
-            <span title="Low confidence detection"> ?</span>
+            <span
+              title="Low confidence detection"
+              className="font-bold text-accent"
+            >
+              ?
+            </span>
           )}
         </li>
       ))}
