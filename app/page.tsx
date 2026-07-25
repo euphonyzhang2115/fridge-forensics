@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ItemChips from "@/components/ItemChips";
 import ResultPanels from "@/components/ResultPanels";
 import { MOCK_RESULTS } from "@/mockData";
 import type { AnalyzeResponse } from "@/types";
@@ -146,6 +147,9 @@ export default function Home() {
 
       {loading && <p>Analyzing photo...</p>}
       {error && <p role="alert">{error}</p>}
+
+      <h2>Detected in your fridge</h2>
+      <ItemChips items={results.items} />
 
       <ResultPanels results={results} />
     </main>
