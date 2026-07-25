@@ -1,15 +1,29 @@
-export interface DetectedItem {
+export interface Item {
   name: string;
-  quantity: number;
-  category: string;
-  confidence: number; // 0-1
-  estimatedExpiry?: string; // ISO date string
-  notes?: string;
+  quantity: string;
+  confidence: "high" | "low";
+}
+
+export interface Recipe {
+  title: string;
+  usesItems: string[];
+  missingItems?: string[];
+}
+
+export interface PriorityItem {
+  name: string;
+  reason: string;
+  expiresOn?: string; // ISO date string
+}
+
+export interface ShoppingItem {
+  name: string;
+  reason: string;
 }
 
 export interface AnalyzeResponse {
-  summary: string;
-  items: DetectedItem[];
-  warnings: string[];
-  analyzedAt: string; // ISO timestamp
+  items: Item[];
+  recipes: Recipe[];
+  priority: PriorityItem[];
+  shopping: ShoppingItem[];
 }

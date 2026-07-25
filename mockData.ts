@@ -1,57 +1,49 @@
 import type { AnalyzeResponse } from "./types";
 
-export const mockAnalyzeResponse: AnalyzeResponse = {
-  summary:
-    "Fridge contains mostly dairy and produce. Two items are past their estimated expiry and should be checked.",
+export const MOCK_RESULTS: AnalyzeResponse = {
   items: [
+    { name: "Whole milk", quantity: "1 carton", confidence: "high" },
+    { name: "Eggs", quantity: "6", confidence: "high" },
+    { name: "Spinach", quantity: "1 bag", confidence: "low" },
+    { name: "Cherry tomatoes", quantity: "1 pint", confidence: "high" },
+    { name: "Leftover pasta", quantity: "1 container", confidence: "low" },
+    { name: "Sharp cheddar cheese", quantity: "1 block", confidence: "high" },
+    { name: "Butter", quantity: "1 stick", confidence: "high" },
+    { name: "Greek yogurt", quantity: "2 cups", confidence: "high" },
+    { name: "Orange juice", quantity: "1 bottle", confidence: "high" },
+    { name: "Carrots", quantity: "1 bunch", confidence: "high" },
+  ],
+  recipes: [
     {
-      name: "Whole milk",
-      quantity: 1,
-      category: "dairy",
-      confidence: 0.94,
-      estimatedExpiry: "2026-07-28",
+      title: "Spinach and cheddar omelette",
+      usesItems: ["Eggs", "Spinach", "Sharp cheddar cheese"],
     },
     {
-      name: "Eggs",
-      quantity: 6,
-      category: "dairy",
-      confidence: 0.88,
-      estimatedExpiry: "2026-08-10",
+      title: "Tomato pasta bake",
+      usesItems: ["Cherry tomatoes", "Leftover pasta", "Sharp cheddar cheese"],
+      missingItems: ["Garlic", "Olive oil"],
+    },
+  ],
+  priority: [
+    {
+      name: "Leftover pasta",
+      reason: "Unlabeled container, estimated to be closest to spoiling",
+      expiresOn: "2026-07-23",
     },
     {
       name: "Spinach",
-      quantity: 1,
-      category: "produce",
-      confidence: 0.81,
-      estimatedExpiry: "2026-07-24",
-      notes: "Leaves appear wilted in image",
-    },
-    {
-      name: "Cherry tomatoes",
-      quantity: 1,
-      category: "produce",
-      confidence: 0.76,
-      estimatedExpiry: "2026-07-30",
-    },
-    {
-      name: "Leftover pasta",
-      quantity: 1,
-      category: "leftovers",
-      confidence: 0.62,
-      estimatedExpiry: "2026-07-23",
-      notes: "Unlabeled container, expiry is a rough estimate",
-    },
-    {
-      name: "Sharp cheddar cheese",
-      quantity: 1,
-      category: "dairy",
-      confidence: 0.9,
-      estimatedExpiry: "2026-08-20",
+      reason: "Leaves appear wilted in the photo",
+      expiresOn: "2026-07-24",
     },
   ],
-  warnings: [
-    "Spinach appears to be past peak freshness.",
-    "Leftover pasta has no visible date label — estimate only.",
+  shopping: [
+    {
+      name: "Garlic",
+      reason: "Needed for the tomato pasta bake recipe",
+    },
+    {
+      name: "Whole milk",
+      reason: "Only one carton left",
+    },
   ],
-  analyzedAt: "2026-07-25T14:32:00.000Z",
 };
