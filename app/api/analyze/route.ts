@@ -1,5 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
+import { DEMO_MODE } from "@/config";
+import { DEMO_RESULTS } from "@/mockData";
 import type { AnalyzeResponse } from "@/types";
 
 const anthropic = new Anthropic();
@@ -79,6 +81,10 @@ export async function POST(request: Request) {
       { error: "Missing imageBase64 in request body." },
       { status: 400 },
     );
+  }
+
+  if (DEMO_MODE) {
+    return NextResponse.json(DEMO_RESULTS);
   }
 
   const { mediaType, data } = parseImageBase64(imageBase64);

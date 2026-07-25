@@ -7,6 +7,7 @@ import type { AnalyzeResponse } from "@/types";
 
 const MAX_DIMENSION = 1024;
 const JPEG_QUALITY = 0.8;
+const EXAMPLE_IMAGE_PATH = "/demo-fridge.jpg";
 
 function downscaleToBase64Jpeg(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -53,12 +54,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleFileChange(
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) {
-    const file = event.target.files?.[0] ?? null;
-    if (!file) return;
-
+  async function analyzeFile(file: File) {
     setPreviewUrl((previous) => {
       if (previous) URL.revokeObjectURL(previous);
       return URL.createObjectURL(file);
@@ -94,10 +90,50 @@ export default function Home() {
     }
   }
 
+  async function handleFileChange(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const file = event.target.files?.[0] ?? null;
+    if (!file) return;
+    await analyzeFile(file);
+  }
+
+  async function handleTryExample() {
+    setError(null);
+    setLoading(true);
+    try {
+      const response = await fetch(EXAMPLE_IMAGE_PATH);
+      if (!response.ok) {
+        throw new Error("Failed to load the example photo.");
+      }
+      const blob = await response.blob();
+      const file = new File([blob], "demo-fridge.jpg", {
+        type: blob.type || "image/jpeg",
+      });
+      await analyzeFile(file);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to load the example photo.",
+      );
+      setLoading(false);
+    }
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-8">
       <h1 className="text-3xl font-semibold">Fridge Forensics</h1>
-      <input type="file" accept="image/*" onChange={handleFileChange} />
+
+      <div className="flex items-center gap-3">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          disabled={loading}
+        />
+        <button type="button" onClick={handleTryExample} disabled={loading}>
+          Try example
+        </button>
+      </div>
 
       {previewUrl && (
         // eslint-disable-next-line @next/next/no-img-element
