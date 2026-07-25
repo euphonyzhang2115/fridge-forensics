@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Fridge Forensics",
-  description: "Analyze what's in your fridge from a photo.",
+  title: "SmartFridge",
+  description:
+    "One photo of your fridge. Get what to cook, what to use first, and what to buy.",
 };
 
 export default function RootLayout({

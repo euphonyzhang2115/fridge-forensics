@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import ItemChips from "@/components/ItemChips";
 import ResultPanels from "@/components/ResultPanels";
-import { MOCK_RESULTS } from "@/mockData";
 import type { AnalyzeResponse } from "@/types";
 
 const MAX_DIMENSION = 1024;
@@ -50,8 +49,9 @@ function downscaleToBase64Jpeg(file: File): Promise<string> {
 }
 
 export default function Home() {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [results, setResults] = useState<AnalyzeResponse>(MOCK_RESULTS);
+  const [results, setResults] = useState<AnalyzeResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -123,28 +123,37 @@ export default function Home() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-[1000px] flex-col items-center gap-12 px-6 py-16 md:py-24">
       <div className="flex flex-col items-center gap-3 text-center">
-        <h1 className="text-4xl font-bold tracking-tight">
-          Fridge Forensics
-        </h1>
+        <h1 className="text-4xl font-bold tracking-tight">SmartFridge</h1>
         <p className="max-w-md text-base font-normal text-muted">
-          See what’s in your fridge and what to cook with it.
+          One photo of your fridge. Get what to cook, what to use first, and
+          what to buy.
         </p>
       </div>
 
-      <div className="flex w-full flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-[color:var(--border-subtle)] bg-card/40 p-10 sm:flex-row">
+      <div className="flex w-full flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-[color:var(--border-subtle)] bg-card/40 p-10">
         <input
+          ref={fileInputRef}
           type="file"
           accept="image/*"
+          capture="environment"
           onChange={handleFileChange}
           disabled={loading}
           suppressHydrationWarning
-          className="text-base font-normal text-muted file:mr-4 file:rounded-full file:border file:border-[color:var(--border-subtle)] file:bg-transparent file:px-4 file:py-2 file:text-base file:font-bold file:text-foreground disabled:opacity-50"
+          className="hidden"
         />
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={loading}
+          className="rounded-full border border-accent bg-accent px-6 py-3 text-base font-bold text-background disabled:opacity-50"
+        >
+          Upload a photo of your fridge
+        </button>
         <button
           type="button"
           onClick={handleTryExample}
           disabled={loading}
-          className="rounded-full border border-accent bg-accent px-5 py-2 text-base font-bold text-background disabled:opacity-50"
+          className="text-base font-normal text-muted underline-offset-4 hover:underline disabled:opacity-50"
         >
           Try example
         </button>
@@ -181,12 +190,16 @@ export default function Home() {
         </p>
       )}
 
-      <div className="flex w-full flex-col gap-4">
-        <h2 className="text-base font-bold">Detected in your fridge</h2>
-        <ItemChips items={results.items} />
-      </div>
+      {results && (
+        <>
+          <div className="flex w-full flex-col gap-4">
+            <h2 className="text-base font-bold">Detected in your fridge</h2>
+            <ItemChips items={results.items} />
+          </div>
 
-      <ResultPanels results={results} />
+          <ResultPanels results={results} />
+        </>
+      )}
     </main>
   );
 }
